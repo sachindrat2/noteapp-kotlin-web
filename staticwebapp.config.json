@@ -1,0 +1,46 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/login",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/register",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/notes",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/notes/add",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/notes/edit/*",
+      "rewrite": "/index.html"
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/composeApp.js", "/*.wasm", "/*.css", "/images/*"]
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    }
+  },
+  "globalHeaders": {
+    "cache-control": "no-cache, no-store, must-revalidate"
+  },
+  "mimeTypes": {
+    ".wasm": "application/wasm",
+    ".mjs": "application/javascript",
+    ".js": "application/javascript"
+  }
+}
