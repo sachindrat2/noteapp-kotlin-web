@@ -1,0 +1,27 @@
+# Quick deployment using pre-built files
+FROM nginx:alpine
+
+# Create app directory and remove nginx defaults
+WORKDIR /usr/share/nginx/html
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy your locally built files (much faster than building in Docker)
+COPY composeApp/build/kotlin-webpack/js/productionExecutable/ ./
+COPY composeApp/build/processedResources/js/main/ ./
+
+# Simple nginx config for SPA
+RUN echo 'server { \
+    listen 80; \
+    server_name localhost; \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html; \
+        try_files $uri $uri/ /index.html; \
+    } \
+    gzip on; \
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript application/wasm; \
+}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

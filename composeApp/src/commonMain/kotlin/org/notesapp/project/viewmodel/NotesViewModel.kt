@@ -61,7 +61,6 @@ class NotesViewModel : ViewModel() {
             )
         }
     }
-    
     fun addNote(note: Note) {
         viewModelScope.launch {
             isLoading = true
@@ -82,7 +81,6 @@ class NotesViewModel : ViewModel() {
             )
         }
     }
-    
     fun updateNote(note: Note) {
         viewModelScope.launch {
             isLoading = true
@@ -103,7 +101,6 @@ class NotesViewModel : ViewModel() {
             )
         }
     }
-    
     fun deleteNote(noteId: String) {
         viewModelScope.launch {
             isLoading = true
