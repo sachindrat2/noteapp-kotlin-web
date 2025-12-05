@@ -18,12 +18,16 @@ object Strings {
     
     // Login Screen
     val login = StringKey("Login", "ログイン")
+    val email = StringKey("Email", "メールアドレス")
     val username = StringKey("Username", "ユーザー名")
     val password = StringKey("Password", "パスワード")
-    val loginButton = StringKey("Login", "ログイン")
+
     val noAccount = StringKey("Don't have an account?", "アカウントをお持ちでないですか？")
     val signUp = StringKey("Sign Up", "新規登録")
-    val welcomeBack = StringKey("Welcome Back", "お帰りなさい")
+    val registerButton = StringKey("Register", "登録")
+    val welcomeBack = StringKey("Welcome Back", "おかえりなさい")
+    val loginTitle = StringKey("Sign In to Your Account", "アカウントにサインイン")
+    val loginSubtitle = StringKey("Access your personal notes", "あなたの個人ノートにアクセス")
     val loginToContinue = StringKey("Login to continue", "続けるにはログインしてください")
     val loggingIn = StringKey("Logging in...", "ログイン中...")
     val loginFailed = StringKey("Login failed. Please try again.", "ログインに失敗しました。もう一度お試しください。")
@@ -31,11 +35,13 @@ object Strings {
     // Register Screen
     val register = StringKey("Register", "新規登録")
     val createAccount = StringKey("Create Account", "アカウント作成")
+    val registerTitle = StringKey("Create Your Account", "アカウントを作成")
+    val registerSubtitle = StringKey("Start organizing your thoughts", "思考の整理を始めましょう")
     val joinUs = StringKey("Join us today", "今すぐ参加")
     val confirmPassword = StringKey("Confirm Password", "パスワード確認")
-    val registerButton = StringKey("Register", "登録")
     val haveAccount = StringKey("Already have an account?", "既にアカウントをお持ちですか？")
     val signIn = StringKey("Sign In", "サインイン")
+    val loginButton = StringKey("Login", "ログイン")
     val registering = StringKey("Registering...", "登録中...")
     val registrationFailed = StringKey("Registration failed. Please try again.", "登録に失敗しました。もう一度お試しください。")
     val passwordsDontMatch = StringKey("Passwords don't match", "パスワードが一致しません")

@@ -3,6 +3,8 @@
 
 package org.notesapp.project.ui.screens
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -13,17 +15,24 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.notesapp.project.network.NotesApiService
 import org.notesapp.project.i18n.Strings
 import org.notesapp.project.i18n.LocalizationManager
+import org.notesapp.project.i18n.LocalLocalizationManager
 
 @Composable
 fun RegisterScreen(
@@ -38,24 +47,45 @@ fun RegisterScreen(
     var confirmPasswordVisible by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    // Replace with your localization or use hardcoded strings for now
-    val strings = object {
-        val username = "Username"
-        val password = "Password"
-        val confirmPassword = "Confirm Password"
-        val registerButton = "Register"
-        val registrationFailed = "Registration failed"
-        val passwordsDontMatch = "Passwords do not match"
-        val haveAccount = "Already have an account?"
-        val loginButton = "Login"
-    }
+    val localizationManager = LocalLocalizationManager.current
     val apiService = remember { NotesApiService.getInstance() }
     val coroutineScope = rememberCoroutineScope()
 
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    )
+                )
+            ),
         contentAlignment = Alignment.Center
     ) {
+        // Background decorative elements
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val canvasWidth = size.width
+            val canvasHeight = size.height
+            
+            // Draw decorative circles
+            drawCircle(
+                color = Color(0xFF00BCD4).copy(alpha = 0.1f),
+                radius = canvasWidth * 0.35f,
+                center = Offset(-canvasWidth * 0.15f, canvasHeight * 0.3f)
+            )
+            drawCircle(
+                color = Color(0xFF4CAF50).copy(alpha = 0.08f),
+                radius = canvasWidth * 0.45f,
+                center = Offset(canvasWidth * 1.15f, canvasHeight * 0.7f)
+            )
+            drawCircle(
+                color = Color(0xFFFF9800).copy(alpha = 0.06f),
+                radius = canvasWidth * 0.28f,
+                center = Offset(canvasWidth * 0.85f, canvasHeight * 0.15f)
+            )
+        }
         Card(
             modifier = Modifier.width(400.dp),
             shape = MaterialTheme.shapes.extraLarge,
@@ -68,16 +98,36 @@ fun RegisterScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(28.dp),
+                    .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Register Title and Subtitle
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = localizationManager.getString(Strings.registerTitle),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = localizationManager.getString(Strings.registerSubtitle),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
                     value = username,
                     onValueChange = {
                         username = it
                         errorMessage = null
                     },
-                    label = { Text(strings.username) },
+                    label = { Text(localizationManager.getString(Strings.username)) },
                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isLoading,
@@ -90,7 +140,7 @@ fun RegisterScreen(
                         password = it
                         errorMessage = null
                     },
-                    label = { Text(strings.password) },
+                    label = { Text(localizationManager.getString(Strings.password)) },
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -112,7 +162,7 @@ fun RegisterScreen(
                         confirmPassword = it
                         errorMessage = null
                     },
-                    label = { Text(strings.confirmPassword) },
+                    label = { Text(localizationManager.getString(Strings.confirmPassword)) },
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
@@ -131,18 +181,47 @@ fun RegisterScreen(
                 Button(
                     onClick = {
                         if (password != confirmPassword) {
-                            errorMessage = strings.passwordsDontMatch
+                            errorMessage = localizationManager.getString(Strings.passwordsDontMatch)
                             return@Button
                         }
                         isLoading = true
                         errorMessage = null
                         coroutineScope.launch {
-                            val result = apiService.register(username, password)
-                            isLoading = false
-                            result.fold(
-                                onSuccess = { onRegisterSuccess() },
-                                onFailure = { errorMessage = strings.registrationFailed }
-                            )
+                            try {
+                                val result = apiService.register(username, password)
+                                isLoading = false
+                                result.fold(
+                                    onSuccess = { onRegisterSuccess() },
+                                    onFailure = { exception ->
+                                        errorMessage = when {
+                                            exception.message?.contains("network", ignoreCase = true) == true ||
+                                            exception.message?.contains("timeout", ignoreCase = true) == true ||
+                                            exception.message?.contains("connection", ignoreCase = true) == true ->
+                                                "Network error. Please check your internet connection."
+                                            exception.message?.contains("409", ignoreCase = true) == true ||
+                                            exception.message?.contains("conflict", ignoreCase = true) == true ->
+                                                "Username or email already exists."
+                                            exception.message?.contains("400", ignoreCase = true) == true ||
+                                            exception.message?.contains("bad request", ignoreCase = true) == true ->
+                                                "Invalid registration data. Please check your inputs."
+                                            exception.message?.contains("404", ignoreCase = true) == true ->
+                                                "Server not found. Please try again later."
+                                            else -> "Registration failed: ${exception.message ?: "Unknown error"}"
+                                        }
+                                    }
+                                )
+                            } catch (e: Exception) {
+                                isLoading = false
+                                errorMessage = when {
+                                    e.message?.contains("network", ignoreCase = true) == true ||
+                                    e.message?.contains("timeout", ignoreCase = true) == true ||
+                                    e.message?.contains("connection", ignoreCase = true) == true ->
+                                        "Network error. Please check your internet connection."
+                                    e.message?.contains("json", ignoreCase = true) == true ->
+                                        "Server response error. Please try again."
+                                    else -> "Registration failed: ${e.message ?: "Unexpected error occurred"}"
+                                }
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -157,7 +236,7 @@ fun RegisterScreen(
                         )
                     } else {
                         Text(
-                            strings.registerButton,
+                            localizationManager.getString(Strings.registerButton),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -177,12 +256,12 @@ fun RegisterScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = strings.haveAccount,
+                        text = localizationManager.getString(Strings.haveAccount),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                     )
                     TextButton(onClick = onBackToLogin) {
-                        Text(strings.loginButton)
+                        Text(localizationManager.getString(Strings.loginButton))
                     }
                 }
             }

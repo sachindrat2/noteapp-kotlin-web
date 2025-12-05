@@ -2,6 +2,7 @@ package org.notesapp.project.ui.screens
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
@@ -452,79 +454,60 @@ fun EmptyNotesView(
 
 @Composable
 private fun DecorativeBackground() {
-    val infiniteTransition = rememberInfiniteTransition()
-    
-    // Animated rotation for decorative circles
-    val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(60000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        )
-    )
-    
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                Brush.verticalGradient(
+                brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f),
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f)
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.06f),
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f)
                     )
                 )
             )
     ) {
-        // Top-left decorative circle
-        Box(
-            modifier = Modifier
-                .offset(x = (-50).dp, y = (-50).dp)
-                .size(200.dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                            Color.Transparent
-                        )
-                    ),
-                    shape = CircleShape
-                )
-        )
-        
-        // Bottom-right decorative circle
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .offset(x = 100.dp, y = 100.dp)
-                .size(250.dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f),
-                            Color.Transparent
-                        )
-                    ),
-                    shape = CircleShape
-                )
-        )
-        
-        // Middle decorative element
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .offset(x = 150.dp, y = (-200).dp)
-                .size(180.dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.06f),
-                            Color.Transparent
-                        )
-                    ),
-                    shape = CircleShape
-                )
-        )
+        // Background decorative elements using Canvas
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val canvasWidth = size.width
+            val canvasHeight = size.height
+            
+            // Draw multiple decorative circles with different colors and positions
+            drawCircle(
+                color = Color(0xFF6750A4).copy(alpha = 0.12f),
+                radius = canvasWidth * 0.35f,
+                center = Offset(-canvasWidth * 0.15f, canvasHeight * 0.25f)
+            )
+            
+            drawCircle(
+                color = Color(0xFF7C4DFF).copy(alpha = 0.10f),
+                radius = canvasWidth * 0.45f,
+                center = Offset(canvasWidth * 1.2f, canvasHeight * 0.6f)
+            )
+            
+            drawCircle(
+                color = Color(0xFF00BCD4).copy(alpha = 0.08f),
+                radius = canvasWidth * 0.3f,
+                center = Offset(canvasWidth * 0.8f, canvasHeight * 0.1f)
+            )
+            
+            drawCircle(
+                color = Color(0xFF4CAF50).copy(alpha = 0.09f),
+                radius = canvasWidth * 0.25f,
+                center = Offset(canvasWidth * 0.2f, canvasHeight * 0.8f)
+            )
+            
+            drawCircle(
+                color = Color(0xFFFF9800).copy(alpha = 0.07f),
+                radius = canvasWidth * 0.4f,
+                center = Offset(canvasWidth * 0.9f, canvasHeight * 0.9f)
+            )
+            
+            drawCircle(
+                color = Color(0xFFE91E63).copy(alpha = 0.06f),
+                radius = canvasWidth * 0.28f,
+                center = Offset(canvasWidth * 0.5f, -canvasHeight * 0.1f)
+            )
+        }
     }
 }

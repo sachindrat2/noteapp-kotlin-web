@@ -65,7 +65,6 @@ class NotesViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            
             val apiNote = note.toApiNote()
             apiService.createNote(apiNote).fold(
                 onSuccess = { createdNote ->
@@ -105,7 +104,6 @@ class NotesViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            
             apiService.deleteNote(noteId).fold(
                 onSuccess = {
                     notes = notes.filter { it.id != noteId }

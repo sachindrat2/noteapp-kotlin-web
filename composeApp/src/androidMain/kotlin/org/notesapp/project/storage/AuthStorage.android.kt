@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 
 actual class AuthStorage {
     private val prefs: SharedPreferences by lazy {
-        // We'll need to pass context, for now use a placeholder
-        // In production, use dependency injection or Application context
-        throw NotImplementedError("Android implementation requires Context")
+        val context = AuthStorageProvider.context
+            ?: throw IllegalStateException("AuthStorage context not initialized. Call AuthStorageProvider.init() in Application or MainActivity")
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
     
     actual fun saveToken(token: String) {
@@ -47,5 +47,14 @@ actual class AuthStorage {
         private const val KEY_TOKEN = "auth_token"
         private const val KEY_USERNAME = "username"
         private const val KEY_LANGUAGE = "app_language"
+    }
+}
+
+object AuthStorageProvider {
+    var context: Context? = null
+        private set
+    
+    fun init(context: Context) {
+        this.context = context.applicationContext
     }
 }
