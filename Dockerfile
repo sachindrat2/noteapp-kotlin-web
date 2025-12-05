@@ -25,23 +25,9 @@ FROM nginx:alpine
 # Copy built app
 COPY --from=builder /app/composeApp/build/kotlin-webpack/js/productionExecutable/ /usr/share/nginx/html/
 
+
 # Copy nginx config for SPA
-COPY <<EOF /etc/nginx/conf.d/default.conf
-server {
-    listen 80;
-    server_name localhost;
-    
-    location / {
-        root /usr/share/nginx/html;
-        index index.html;
-        try_files \$uri \$uri/ /index.html;
-    }
-    
-    # Enable gzip compression
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript application/wasm;
-}
-EOF
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
