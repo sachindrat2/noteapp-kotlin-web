@@ -9,6 +9,7 @@ COPY build.gradle.kts settings.gradle.kts ./
 COPY gradle/ gradle/
 COPY composeApp/build.gradle.kts composeApp/
 COPY gradle.properties* ./
+COPY gradlew gradlew.bat ./
 
 # Download dependencies first (cached layer)
 RUN ./gradlew dependencies --no-daemon || true

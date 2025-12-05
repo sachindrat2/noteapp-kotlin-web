@@ -152,7 +152,6 @@ class NotesApiService {
                 }
                 setBody(note)
             }
-            
             if (response.status.isSuccess()) {
                 val createdNote: ApiNote = response.body()
                 Result.success(createdNote)
