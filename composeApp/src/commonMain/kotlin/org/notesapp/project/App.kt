@@ -14,6 +14,8 @@ import org.notesapp.project.ui.screens.RegisterScreen
 import org.notesapp.project.ui.theme.NotesAppTheme
 
 import androidx.compose.material3.Text
+import org.notesapp.project.viewmodel.NotesViewModel
+
 @Composable
 fun App() {
     val authStorage = remember { AuthStorage() }
