@@ -45,7 +45,6 @@ class NotesViewModel : ViewModel() {
             println("NotesViewModel: Starting to load notes from API...")
             isLoading = true
             errorMessage = null
-            
             apiService.getNotes().fold(
                 onSuccess = { apiNotes ->
                     println("NotesViewModel: Successfully loaded ${apiNotes.size} notes from API")
@@ -84,7 +83,6 @@ class NotesViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            
             val apiNote = note.toApiNote()
             apiService.updateNote(note.id, apiNote).fold(
                 onSuccess = { updatedNote ->

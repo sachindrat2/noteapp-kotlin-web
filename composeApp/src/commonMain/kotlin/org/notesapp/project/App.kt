@@ -1,5 +1,4 @@
 package org.notesapp.project
-
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
@@ -13,7 +12,8 @@ import org.notesapp.project.ui.screens.LoginScreen
 import org.notesapp.project.ui.screens.NotesListScreen
 import org.notesapp.project.ui.screens.RegisterScreen
 import org.notesapp.project.ui.theme.NotesAppTheme
-import org.notesapp.project.viewmodel.NotesViewModel
+
+import androidx.compose.material3.Text
 @Composable
 fun App() {
     val authStorage = remember { AuthStorage() }
@@ -37,6 +37,8 @@ fun App() {
     NotesAppTheme {
         ProvideLocalization(authStorage = authStorage) {
             CompositionLocalProvider(LocalNavigationController provides navigationController) {
+                // Minimal Japanese text for debugging
+                Text("こんにちは世界")
                 AppContent(
                     navigationController = navigationController,
                     apiService = apiService
