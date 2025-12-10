@@ -8,7 +8,6 @@ WORKDIR /app
 COPY build.gradle.kts settings.gradle.kts ./
 COPY gradle/ gradle/
 COPY composeApp/build.gradle.kts composeApp/
-COPY gradle.properties* ./
 COPY gradlew gradlew.bat ./
 
 # Download dependencies first (cached layer)
@@ -23,8 +22,8 @@ RUN ./gradlew :composeApp:jsBrowserProductionWebpack --no-daemon --parallel
 # Lightweight production stage
 FROM nginx:alpine
 
-# Copy built app
-COPY --from=builder /app/composeApp/build/kotlin-webpack/js/productionExecutable/ /usr/share/nginx/html/
+# Copy built app (use correct build output with custom index.html)
+COPY --from=builder /app/composeApp/build/dist/js/productionExecutable/ /usr/share/nginx/html/
 
 
 # Copy nginx config for SPA

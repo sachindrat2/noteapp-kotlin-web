@@ -7,7 +7,6 @@ build/
 
 # Local properties
 local.properties
-gradle.properties
 
 # IDE files
 .idea/
