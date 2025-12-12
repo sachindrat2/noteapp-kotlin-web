@@ -140,10 +140,17 @@ compose.desktop {
 tasks.register<Copy>("copyCustomIndexHtml") {
     from("src/webMain/resources/index.html")
     into("$buildDir/dist/js/productionExecutable")
-   
+}
+
+tasks.register<Copy>("copyCustomIndexHtmlDev") {
+    from("src/webMain/resources/index.html")
+    into("$buildDir/dist/js/developmentExecutable")
 }
 
 tasks.named("jsBrowserProductionWebpack") {
     finalizedBy("copyCustomIndexHtml")
+}
+tasks.named("jsBrowserDevelopmentWebpack") {
+    finalizedBy("copyCustomIndexHtmlDev")
 }
 

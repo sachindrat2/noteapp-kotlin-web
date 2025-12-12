@@ -1,34 +1,42 @@
-# Optimized multi-stage build for production
-FROM gradle:8.4-jdk17-alpine AS builder
+# Multi-stage build for Kotlin Compose JS
+FROM gradle:8.4-jdk17 AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy gradle files first for better caching
+# Install Node + Yarn (required for Kotlin JS / Webpack)
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install -g yarn
+
+# Copy gradle config
 COPY build.gradle.kts settings.gradle.kts ./
+COPY gradle.properties ./
 COPY gradle/ gradle/
 COPY composeApp/build.gradle.kts composeApp/
-COPY gradlew gradlew.bat ./
+COPY gradlew ./
+RUN chmod +x gradlew
 
-# Download dependencies first (cached layer)
+# Pre-fetch dependencies
 RUN ./gradlew dependencies --no-daemon || true
 
-# Copy source code
+# Copy source
 COPY composeApp/src/ composeApp/src/
 
-# Build production bundle with optimizations
+# Build JS production bundle
 RUN ./gradlew :composeApp:jsBrowserProductionWebpack --no-daemon --parallel
+# Debug: List contents of build output
+RUN ls -l /app/composeApp/build/dist/js/productionExecutable/
 
-# Lightweight production stage
+# Production stage
 FROM nginx:alpine
 
-# Copy built app (use correct build output with custom index.html)
-COPY --from=builder /app/composeApp/build/dist/js/productionExecutable/ /usr/share/nginx/html/
-
-
-# Copy nginx config for SPA
+# Copy local build output (not from builder)
+COPY composeApp/build/dist/js/productionExecutable/ /usr/share/nginx/html/
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# Debug: List contents of web root
+RUN ls -l /usr/share/nginx/html/
 
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
